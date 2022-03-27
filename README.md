@@ -1,1 +1,1 @@
-# ZB4199-FYP-Whole-Genome-Sequencing-of-Pathogenic-Candida-Species
+FYP-Whole-Genome-Sequencing-of-Pathogenic-Candida-Species
