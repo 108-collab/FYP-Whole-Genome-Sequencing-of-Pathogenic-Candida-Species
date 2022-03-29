@@ -1,2 +1,2 @@
 # FYP(Whole-Genome-Sequencing-of-Pathogenic-Candida-Species)
-Supplementary information
+Supplementary information, codes and linux commands
