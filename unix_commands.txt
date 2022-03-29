@@ -1,0 +1,25 @@
+1. Assessing quality of reads using fastqc 
+fastqc *.fastq.gz -o name_folder
+
+2. Trimming and filtering of reads using fastp(default parameters)
+fastp -i name_file1.fq.gz -I name_file2.fq.gz -o name_file1c.fq.gz -O name_file2c.fq.gz
+
+3.Variant calling
+snippy --outdir snps_id --ref name_candida_ref.gb --R1 name_file1.fq.gz --R2 name_file2.fq.gz -
+4. Extract SNPs variants that are 1/1 and 0/1
+bcftools view --include '(FMT/GT="1/1"||FMT/GT="0/1") && QUAL>=100 && FMT/DP>=10 && (FMT/AO)/(FMT/DP)>=0' snps.raw.vcf  | vt normalize -r reference/ref.fa - | bcftools annotate --remove '^INFO/TYPE,^INFO/DP,^INFO/RO,^INFO/AO,^INFO/AB,^FORMAT/GT,^FORMAT/DP,^FORMAT/RO,^FORMAT/AO,^FORMAT/QR,^FORMAT/QA,^FORMAT/GL' > snps.filt.vcf
+snippy-vcf_extract_subs snps.filtn.vcf > snps.subsn.vcf
+
+5. Merging of the individual isolates vcf files 
+bcftools index snps.subsnn.vcf.gz; bgzip snps.subsn.vcf   
+bcftools merge (list of gz vcf files)--missing-to-ref  > snpsn.vcf
+
+6. RRHS generating of 100 fasta sequences based on the merged vcf file 
+java -jar RRHS.jar -i snpson.vcf -iFormat VCF -fasta -n 100
+
+7. Running RAxML on the fasta sequences 
+raxmlHPC-SSE3 -s snpson_1.fa -p 12345 -m GTRGAMMA -n TEST1
+raxmlHPC-SSE3 ­f b ­t ref ­z trees ­m GTRGAMMA ­n TEST
+
+8. Plink to carry out pca on the merged vcf file 
+plink --vcf snpson.vcf --allow-extra-chr --set-missing-var-ids @:# --pca --out candida
