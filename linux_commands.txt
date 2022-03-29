@@ -19,7 +19,9 @@ java -jar RRHS.jar -i snpson.vcf -iFormat VCF -fasta -n 100
 
 7. Running RAxML on the fasta sequences 
 raxmlHPC-SSE3 -s snpson_1.fa -p 12345 -m GTRGAMMA -n TEST1
-raxmlHPC-SSE3 ­f b ­t ref ­z trees ­m GTRGAMMA ­n TEST
 
-8. Plink to carry out pca on the merged vcf file 
+8. To generate a supertree using the best scoring tree as the ref,
+raxmlHPC-SSE3 -f b -t ref_tree -z (list of the other ML trees) -m GTRGAMMA -n TEST
+
+9. Plink to carry out pca on the merged vcf file 
 plink --vcf snpson.vcf --allow-extra-chr --set-missing-var-ids @:# --pca --out candida
