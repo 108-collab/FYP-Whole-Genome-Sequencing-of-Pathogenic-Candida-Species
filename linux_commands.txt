@@ -4,8 +4,9 @@ fastqc *.fastq.gz -o name_folder
 2. Trimming and filtering of reads using fastp(default parameters)
 fastp -i name_file1.fq.gz -I name_file2.fq.gz -o name_file1c.fq.gz -O name_file2c.fq.gz
 
-3.Variant calling
+3.Variant calling and alignment of reads using snippy
 snippy --outdir snps_id --ref name_candida_ref.gb --R1 name_file1.fq.gz --R2 name_file2.fq.gz -
+
 4. Extract SNPs variants that are 1/1 and 0/1
 bcftools view --include '(FMT/GT="1/1"||FMT/GT="0/1") && QUAL>=100 && FMT/DP>=10 && (FMT/AO)/(FMT/DP)>=0' snps.raw.vcf  | vt normalize -r reference/ref.fa - | bcftools annotate --remove '^INFO/TYPE,^INFO/DP,^INFO/RO,^INFO/AO,^INFO/AB,^FORMAT/GT,^FORMAT/DP,^FORMAT/RO,^FORMAT/AO,^FORMAT/QR,^FORMAT/QA,^FORMAT/GL' > snps.filt.vcf
 snippy-vcf_extract_subs snps.filtn.vcf > snps.subsn.vcf
@@ -20,7 +21,7 @@ java -jar RRHS.jar -i snpson.vcf -iFormat VCF -fasta -n 100
 7. Running RAxML on the fasta sequences 
 raxmlHPC-SSE3 -s snpson_1.fa -p 12345 -m GTRGAMMA -n TEST1
 
-8. To generate a supertree using the best scoring tree as the ref,
+8. To generate a supertree using the best scoring tree as the ref
 raxmlHPC-SSE3 -f b -t ref_tree -z (list of the other ML trees) -m GTRGAMMA -n TEST
 
 9. Plink to carry out pca on the merged vcf file 
